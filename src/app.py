@@ -25,7 +25,7 @@ def download():
     query = request.args.to_dict(flat=False)
     return render_template('download.html', file=query['file'][0])
 
-@app.route("/api/process-file", methods=['POST'])
+@app.route("/api/single-sales-import", methods=['POST'])
 def processFile():
     #print(request.form.get('store'))
     file = request.files['file']
@@ -58,14 +58,17 @@ def processFile():
         output_path = os.path.join(app.config['UPLOAD_FOLDER'], output_file_name)
         generate_sales_import(df, int(request.form.get('starting_num')), output_path)
 
-    return redirect(url_for('download', file=output_file_name))
+    # return file name
+    return output_file_name
 
-@app.route('/api/download-file', methods=['POST'])
+@app.route('/api/download-file', methods=['GET'])
 def downloadFile():
-    if request.form.get('filename') == '':
+    query = request.args.to_dict(flat=False)
+    if query['file'][0] == '':
+        # set to 404
         return "non-existent"
     # add background task that deletes the file after 10 minutes
-    return send_from_directory(app.config['UPLOAD_FOLDER'], request.form.get('filename'))
+    return send_from_directory(app.config['UPLOAD_FOLDER'], query['file'][0])
 
 def allowed_file(filename):
     return '.' in filename and \

@@ -64,5 +64,5 @@ def generate_sales_import(data: pd.DataFrame, starting_num: int, output_dir  = "
             ws["D" + str(row)].value = dt_temp
         ws["{}{}".format("J", row)].number_format = numbers.FORMAT_NUMBER
 
-    wb.save(output_dir + "test.xlsx")
+    wb.save(output_dir)
     return True
