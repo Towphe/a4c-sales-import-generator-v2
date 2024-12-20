@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from openpyxl import Workbook, worksheet
-from openpyxl.styles import PatternFill, numbers, NamedStyle
+from openpyxl.styles import PatternFill, numbers, NamedStyle, Alignment
 from openpyxl.utils.dataframe import dataframe_to_rows
 from .sales_order_code_generator import generate_sales_order_str
 from .sales_persons import sales_persons_dict
@@ -16,6 +16,7 @@ def generate_sales_import(data: pd.DataFrame, starting_num: int, output_dir  = "
     previous_r = None
     current_si_no = starting_num
     # iterate thru every row of dataframe
+    ctr = 7
     for r in dataframe_to_rows(data, index=False, header=True):
         if r[0] == "SalesOrderCode":
             for j in range(5):
@@ -41,6 +42,8 @@ def generate_sales_import(data: pd.DataFrame, starting_num: int, output_dir  = "
             for i in range(0,16):
                 r[i] = ""
         ws.append(r)
+        ws["".join(["F", str(ctr)])].alignment = Alignment(horizontal='right')
+        ctr += 1
 
     orange_fill = PatternFill(start_color='D2691E', fill_type="solid")
     for col in ws['A':'AC']:

@@ -36,7 +36,7 @@ def convert_ginee_to_output(ginee_pd: pd.DataFrame) -> pd.DataFrame:
         output_pd["IsApproved"] = True
         output_pd["TaxDate"] = ginee_pd["Create Time"]
         output_pd["Debtor"] = sales_persons_dict[ginee_pd["Channel"].array[0]][ginee_pd["Store Name"].array[0]]["debtor"]
-        output_pd["CurrencyRate"] = 1   # appears as `N8` on the Excel file
+        output_pd["CurrencyRate"] = "N8"   # appears as `N8` on the Excel file
         output_pd["ReverseRate"] = ""
         output_pd["SalesPerson"] = sales_persons_dict[ginee_pd["Channel"].array[0]][ginee_pd["Store Name"].array[0]]["name"]
         output_pd["Term"] = "C.O.D."
