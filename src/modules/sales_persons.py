@@ -30,12 +30,37 @@ sales_persons_dict = {
             "name" : "KONTROLFREEK PH - ONLINE SALES",
             "filename" : "LAZADA KONTROLFREEK",
             "debtor" : "103-K00000011"
+        },
+        "Energea Philippines": {
+            "name": "LAZADA ENERGEA",
+            "filename": "LAZADA - Energea",
+            "debtor": "103-E00000019"
         }
     },
     "Shopee" : {
-        "Jabra" : {
+        "Jabra Official Store" : {
             "name" : "SHOPEE-JABRA ONLINE",
             "debtor" : "102-S001"
+        },
+        "Afford4C": {
+            "name": "SHOPEE ONLINE",
+            "debtor": "103-S001"
+        },
+        "Poly Enterprise": {
+            "name":"SHOPEE POLYCOM",
+            "debtor":"103-S00000016"
+        },
+        "LG Monitors": {
+            "name": "SHOPEE-LG",
+            "debtor": "102-S019"
+        }
+    },
+    "TikTok": {
+        "Jabra - Tiktok": {
+            "name": "TIKTOK JABRA",
+            "filename": "TIKTOK JABRA",
+            "debtor": "102-T005"
         }
     }
+
 }

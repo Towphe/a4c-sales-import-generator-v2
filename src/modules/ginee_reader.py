@@ -2,7 +2,11 @@ import numpy as np
 import pandas as pd
 from datetime import datetime, date
 from pandas.core.arrays import boolean
+from openpyxl.utils.dataframe import dataframe_to_rows
 from .sales_persons import sales_persons_dict
+from datetime import datetime
+
+# dttm = datetime.strptime("", /"%m/%d/"%Y)
 
 # function that extracts data from ginee
 def extract_from_ginee(xl_dir: str) -> pd.DataFrame:
@@ -10,7 +14,7 @@ def extract_from_ginee(xl_dir: str) -> pd.DataFrame:
     ginee:pd.DataFrame = pd.read_excel(xl_dir).fillna(method='ffill')
 
     # validate GINEE excel file
-    if (ginee["Channel"].unique().__len__() != 1 or ginee["Store Name"].unique().__len__() != 1):
+    if (ginee["Channel"].unique().__len__() < 1 or ginee["Store Name"].unique().__len__() < 1):
         # invalid; document must only have one channel and/or store name
         return None
 
@@ -24,21 +28,44 @@ def extract_from_ginee(xl_dir: str) -> pd.DataFrame:
     # return output and filename
     return {
         'output' : output,
-        'filename' : sales_persons_dict[ginee['Channel'][0]][ginee["Store Name"][0]]['filename']
     }
+
+
+def treat_seller_info(seller_info: pd.DataFrame):
+    # instantiate data frame
+    # output_pd = pd.DataFrame(columns=['Debtor', 'SalesPerson'])
+    debtors = []
+    sales_persons = []
+
+    for r in dataframe_to_rows(seller_info, index=False, header=False):
+        debtors.append(sales_persons_dict[r[0]][r[1]]["debtor"])
+        sales_persons.append(sales_persons_dict[r[0]][r[1]]["name"])
+
+    output_pd = pd.DataFrame({
+        'Debtor': debtors,
+        'SalesPerson': sales_persons
+    })
+
+    return output_pd
 
 # convert GINEE excel file to output dataframe
 def convert_ginee_to_output(ginee_pd: pd.DataFrame) -> pd.DataFrame:
     output_pd = pd.DataFrame()
+
+    # treat seller info
+    treated_seller_info = treat_seller_info(ginee_pd[["Channel","Store Name"]])
+
     try:
         output_pd["SalesOrderCode"] = ""
         output_pd["SalesOrderDate"] = ginee_pd["Create Time"]
         output_pd["IsApproved"] = True
         output_pd["TaxDate"] = ginee_pd["Create Time"]
-        output_pd["Debtor"] = sales_persons_dict[ginee_pd["Channel"].array[0]][ginee_pd["Store Name"].array[0]]["debtor"]
-        output_pd["CurrencyRate"] = "N8"   # appears as `N8` on the Excel file
+        # output_pd["Debtor"] = sales_persons_dict[ginee_pd["Channel"].array[0]][ginee_pd["Store Name"].array[0]]["debtor"]
+        output_pd["Debtor"] = treated_seller_info["Debtor"]
+        output_pd["CurrencyRate"] = 1   # appears as `N8` on the Excel file
         output_pd["ReverseRate"] = ""
-        output_pd["SalesPerson"] = sales_persons_dict[ginee_pd["Channel"].array[0]][ginee_pd["Store Name"].array[0]]["name"]
+        # output_pd["SalesPerson"] = sales_persons_dict[ginee_pd["Channel"].array[0]][ginee_pd["Store Name"].array[0]]["name"]
+        output_pd["SalesPerson"] = treated_seller_info["SalesPerson"]
         output_pd["Term"] = "C.O.D."
         output_pd["ReferenceNo"] = ginee_pd["Order ID"]
         output_pd["Ref1"] = ginee_pd["Recipient Name"]
