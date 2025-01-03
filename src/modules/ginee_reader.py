@@ -126,7 +126,7 @@ def convert_ginee_to_output(ginee_pd: pd.DataFrame) -> pd.DataFrame:
         output_pd["NumRef1"] = ""
         output_pd["NumRef2"] = ""
         output_pd["TaxCode"] = "SR-SP"
-        output_pd["TaxRate"] = 12
+        output_pd["TaxRate"] = 0.12
         output_pd["WTaxCode"] = 0.00
         output_pd["WTaxRate"] = 0.00
     except:
