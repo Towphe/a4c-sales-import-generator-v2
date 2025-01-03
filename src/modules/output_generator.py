@@ -26,6 +26,10 @@ def generate_sales_import(data: pd.DataFrame, starting_num: int, output_dir  = "
             r[0] = generate_sales_order_str(current_si_no)
             current_si_no += 1
             previous_r = r
+
+            dt_temp = datetime.strptime(r[1], '%d-%m-%Y %H:%M').strftime('%m/%d/%Y')
+            ws.cell(row=ctr,column=2).value = dt_temp
+            ws.cell(row=ctr,column=4).value = dt_temp
         elif r[9] != previous_r[9]:
             r[0] = generate_sales_order_str(current_si_no)
             current_si_no += 1
