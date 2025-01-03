@@ -1,4 +1,4 @@
-from flask import Flask, abort, flash, request, redirect, url_for, render_template, send_from_directory, Blueprint, current_app
+from flask import request, redirect, url_for, render_template, send_from_directory, Blueprint, current_app, Response
 import os
 from ..modules import extract_from_ginee, generate_sales_import, sales_persons_dict
 from werkzeug.utils import secure_filename
@@ -15,16 +15,18 @@ from src.endpoints import sales_import_generator
 # app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 #upload_manager = init_upload_manager(app)
-
 sales_import_generator = Blueprint('sales_import_generator', __name__, template_folder='templates')
 
 
 @sales_import_generator.route("/single-sales-import", methods=['POST'])
-def processFile():
-    #print(request.form.get('store'))
+def process_single_file():
     file = request.files['file']
-    if file.filename == '':
-        return redirect(url_for('index'))
+    output_file_name = ""
+
+    # handle error here
+    # if file.filename == '':
+    #     return redirect(url_for('index'))
+
     if file:
         file_path = os.path.join("".join(["src/", current_app.config['UPLOAD_FOLDER']]), secure_filename(file.filename))
 
@@ -34,26 +36,27 @@ def processFile():
         # then process file
         current_date = datetime.now()
 
-        output = None
         df = pd.DataFrame()
-        try:
-            #df = extract_from_ginee(file_path)
-            output = extract_from_ginee(file_path)
-            df = output['output']
-        except Exception as e:
-            # print(e)
-            return redirect(url_for('index', s='file-error'))
-        output_file_name = str(current_date.month) + "-" + str(current_date.day)+ "-" + str(current_date.year) + " " + output['filename'] +".xlsx"
-        # os.remove(file_path)
 
+        output = extract_from_ginee(file_path)
+
+        # validate output
+        if output == None:
+            return Response("{'message':'Invalid file input'", status=400, mimetype="application/json")
+
+        df = output['output']
+
+        output_file_name = str(current_date.month) + "-" + str(current_date.day)+ "-" + str(current_date.year) + " " + "SALES IMPORTS" +".xlsx"
+
+        # handle error here
         if (type(df) == bool):
-            return redirect(url_for('index'))
+            return Response("{'message':'Invalid file input'", status=400, mimetype="application/json")
 
         output_path = os.path.join("".join(["src/", current_app.config['UPLOAD_FOLDER']]), output_file_name)
         generate_sales_import(df, int(request.form.get('starting_num')), output_path)
 
     # return file name
-    return output_file_name
+    return Response(output_file_name, status=200, mimetype='application/json')
 
 @sales_import_generator.route('/download-file', methods=['GET'])
 def downloadFile():
