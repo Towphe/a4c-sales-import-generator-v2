@@ -7,7 +7,7 @@ sales_persons_dict = {
         },
         # fix the following below
         "LG Monitors" : {
-            "name" : "LG-ONLINE SALES",
+            "name" : "LAZADA LG",
             "filename" : "LAZADA LG",
             "debtor" : "102-L001"
         },
@@ -39,7 +39,7 @@ sales_persons_dict = {
     },
     "Shopee" : {
         "Jabra Official Store" : {
-            "name" : "SHOPEE-JABRA ONLINE",
+            "name" : "SHOPEE-JABRA",
             "debtor" : "102-S001"
         },
         "Afford4C": {
@@ -53,6 +53,18 @@ sales_persons_dict = {
         "LG Monitors": {
             "name": "SHOPEE-LG",
             "debtor": "102-S019"
+        },
+        "ADDASOUND Audio": {
+            "name": "SHOPEE ONLINE-ADDA",
+            "debtor": "103-S00000026"
+        },
+        "Energea": {
+            "name": "SHOPEE ENERGEA",
+            "debtor": "103-S00000034"
+        },
+        "KontrolFreek": {
+            "name": "SHOPEE ONLINE-KONTRO",
+            "debtor": "103-S00000028"
         }
     },
     "TikTok": {
