@@ -132,4 +132,4 @@ def convert_ginee_to_output(ginee_pd: pd.DataFrame) -> pd.DataFrame:
     except:
          return None
 
-    return output_pd
+    return output_pd.sort_values(by=['Debtor'], ascending=[True])
