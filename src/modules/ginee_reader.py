@@ -111,7 +111,7 @@ def convert_ginee_to_output(ginee_pd: pd.DataFrame) -> pd.DataFrame:
         output_pd["Project_2"] = ""
         output_pd.rename(columns={"Project_2": "Project"}, inplace=True)
         output_pd["ReferenceNo_2"] = ""
-        output_pd.rename(columns={"ReferenceNo_2": "ReferenceNo"}, inplace=True)
+        # output_pd.rename(columns={"ReferenceNo_2": "ReferenceNo"}, inplace=True)
         output_pd["Ref"] = ""
         output_pd["Ref2_2"] = ""
         output_pd.rename(columns={"Ref2_2": "Ref2"}, inplace=True)
@@ -132,4 +132,11 @@ def convert_ginee_to_output(ginee_pd: pd.DataFrame) -> pd.DataFrame:
     except:
          return None
 
-    return output_pd.sort_values(by=['Debtor'], ascending=[True])
+    # sort values
+    output_pd = output_pd.sort_values(by=["Debtor", "ReferenceNo"], ascending=[True, False])
+
+    # rename column
+    output_pd.rename(columns={"ReferenceNo_2": "ReferenceNo"}, inplace=True)
+
+    # return output_pd.sort_values(by=['Debtor', "ReferenceNo"], ascending=True)
+    return output_pd
