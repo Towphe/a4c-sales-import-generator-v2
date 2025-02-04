@@ -35,6 +35,11 @@ sales_persons_dict = {
             "name": "LAZADA ENERGEA",
             "filename": "LAZADA - Energea",
             "debtor": "103-E00000019"
+        },
+        "Jlab Audio": {
+            "name": "LAZADA-JLAB ONLINE",
+            "filename": "LAZADA - JLAB",
+            "debtor": "102-L010"
         }
     },
     "Shopee" : {
@@ -65,6 +70,10 @@ sales_persons_dict = {
         "KontrolFreek": {
             "name": "SHOPEE ONLINE-KONTRO",
             "debtor": "103-S00000028"
+        },
+        "Jlab Audio": {
+            "name": "SHOPEE-JLAB ONLINE",
+            "debtor": "102-S022"
         }
     },
     "TikTok": {
