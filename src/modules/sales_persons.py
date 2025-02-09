@@ -26,7 +26,7 @@ sales_persons_dict = {
             "filename" : "POLY",
             "debtor" : "103-P00000006"
         },
-        "LAZADA-KONTROLFREEK" : { # this is right
+        "KontrolFreek Store" : { # this is right
             "name" : "KONTROLFREEK PH - ONLINE SALES",
             "filename" : "LAZADA KONTROLFREEK",
             "debtor" : "103-K00000011"
@@ -36,7 +36,7 @@ sales_persons_dict = {
             "filename": "LAZADA - Energea",
             "debtor": "103-E00000019"
         },
-        "Jlab Audio": {
+        "JLab Audio": {
             "name": "LAZADA-JLAB ONLINE",
             "filename": "LAZADA - JLAB",
             "debtor": "102-L010"
@@ -67,11 +67,11 @@ sales_persons_dict = {
             "name": "SHOPEE ENERGEA",
             "debtor": "103-S00000034"
         },
-        "KontrolFreek": {
+        "KontrolFreek Store": {
             "name": "SHOPEE ONLINE-KONTRO",
             "debtor": "103-S00000028"
         },
-        "Jlab Audio": {
+        "JLab Audio": {
             "name": "SHOPEE-JLAB ONLINE",
             "debtor": "102-S022"
         }
