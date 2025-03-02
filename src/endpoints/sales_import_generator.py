@@ -38,7 +38,9 @@ def process_single_file():
 
         df = pd.DataFrame()
 
-        output = extract_from_ginee(file_path)
+        print(request.form.get("version"))
+
+        output = extract_from_ginee(file_path, request.form.get("version"))
 
         # validate output
         if output == None:

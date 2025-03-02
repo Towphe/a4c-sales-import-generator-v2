@@ -4,12 +4,13 @@ from datetime import datetime, date
 from pandas.core.arrays import boolean
 from openpyxl.utils.dataframe import dataframe_to_rows
 from .sales_persons import sales_persons_dict
+from .sales_persons_v2 import sales_persons_dict_v2
 from datetime import datetime
 
 # dttm = datetime.strptime("", /"%m/%d/"%Y)
 
 # function that extracts data from ginee
-def extract_from_ginee(xl_dir: str) -> pd.DataFrame:
+def extract_from_ginee(xl_dir: str, version: str = "v1") -> pd.DataFrame:
     # read GINEE excel file
     ginee:pd.DataFrame = pd.read_excel(xl_dir).fillna(method='ffill')
 
@@ -19,7 +20,7 @@ def extract_from_ginee(xl_dir: str) -> pd.DataFrame:
         return None
 
     # convert GINEE to output dataframme
-    output = convert_ginee_to_output(ginee)
+    output = convert_ginee_to_output(ginee, version)
 
     # check if output is valid
     if type(output) != pd.DataFrame:
@@ -31,15 +32,20 @@ def extract_from_ginee(xl_dir: str) -> pd.DataFrame:
     }
 
 
-def treat_seller_info(seller_info: pd.DataFrame):
+def treat_seller_info(seller_info: pd.DataFrame, version: str = "v1"):
     # instantiate data frame
     # output_pd = pd.DataFrame(columns=['Debtor', 'SalesPerson'])
     debtors = []
     sales_persons = []
-
-    for r in dataframe_to_rows(seller_info, index=False, header=False):
-        debtors.append(sales_persons_dict[r[0]][r[1]]["debtor"])
-        sales_persons.append(sales_persons_dict[r[0]][r[1]]["name"])
+    
+    if version == "v1":
+        for r in dataframe_to_rows(seller_info, index=False, header=False):
+            debtors.append(sales_persons_dict[r[0]][r[1]]["debtor"])
+            sales_persons.append(sales_persons_dict[r[0]][r[1]]["name"])
+    elif version == "v2":
+        for r in dataframe_to_rows(seller_info, index=False, header=False):
+            debtors.append(sales_persons_dict_v2[r[0]][r[1]]["debtor"])
+            sales_persons.append(sales_persons_dict_v2[r[0]][r[1]]["name"])
 
     output_pd = pd.DataFrame({
         'Debtor': debtors,
@@ -49,11 +55,11 @@ def treat_seller_info(seller_info: pd.DataFrame):
     return output_pd
 
 # convert GINEE excel file to output dataframe
-def convert_ginee_to_output(ginee_pd: pd.DataFrame) -> pd.DataFrame:
+def convert_ginee_to_output(ginee_pd: pd.DataFrame, version: str = "v1") -> pd.DataFrame:
     output_pd = pd.DataFrame()
 
     # treat seller info
-    treated_seller_info = treat_seller_info(ginee_pd[["Channel","Store Name"]])
+    treated_seller_info = treat_seller_info(ginee_pd[["Channel","Store Name"]], version)
 
     try:
         output_pd["SalesOrderCode"] = ""

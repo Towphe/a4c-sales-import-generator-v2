@@ -9,7 +9,7 @@ from .sales_persons import sales_persons_dict
 import sys
 from datetime import datetime
 
-def generate_sales_import(data: pd.DataFrame, starting_num: int, output_dir  = "../../temp"):
+def generate_sales_import(data: pd.DataFrame, starting_num: int, output_dir  = "../../temp", version = "v1"):
     # create instance of template file
     wb = load_workbook("src/temp/TEMPLATE.xlsx")
 
