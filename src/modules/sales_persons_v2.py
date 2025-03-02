@@ -24,7 +24,7 @@ sales_persons_dict_v2 = {
         "Poly Enterprise" : {
             "name" : "LAZADA-POLY",
             "filename" : "POLY",
-            "debtor" : "103-P00000006"
+            "debtor" : "102-P011"
         },
         "KontrolFreek Store" : { # this is right
             "name" : "KONTROLFREEK PH - ONLINE SALES",
