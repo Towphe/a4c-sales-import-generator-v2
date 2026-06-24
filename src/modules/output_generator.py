@@ -20,7 +20,7 @@ def _parse_date(value: str) -> str:
             continue
     raise ValueError(f"Unrecognised date format: {value!r}")
 
-def generate_sales_import(data: pd.DataFrame, starting_num: int, output_dir  = "../../temp"):
+def generate_sales_import(data: pd.DataFrame, starting_num: int, output_path  = "../../temp"):
     # create new excel file
     wb = Workbook()
     ws = wb.active
@@ -28,7 +28,7 @@ def generate_sales_import(data: pd.DataFrame, starting_num: int, output_dir  = "
     previous_r = None
     current_si_no = starting_num
     # iterate thru every row of dataframe
-    ctr = 7
+    ctr = 2
 
     # print(data)
     for r in dataframe_to_rows(data, index=False, header=False):
@@ -118,8 +118,10 @@ def generate_sales_import(data: pd.DataFrame, starting_num: int, output_dir  = "
         ws.cell(row=ctr,column=61).value = r[60]
         ws.cell(row=ctr,column=62).value = r[61]
 
+        ctr += 1
+
     grey_fill = PatternFill(start_color='808080', fill_type="solid")
-    for i in range(1, data.shape[0] + 7):
+    for i in range(1, ctr):
         ws['AD' + str(i)].fill = grey_fill
 
     blue_fill = PatternFill(start_color='00BFFF', fill_type="solid")
@@ -128,13 +130,8 @@ def generate_sales_import(data: pd.DataFrame, starting_num: int, output_dir  = "
 
     ws['AD1'] = ""
 
-    for row in range(7, data.shape[1]+7):
-        if (ws["B" + str(row)].value != None and ws["B" + str(row)].value != ''):
-            # format date to `mm/dd/yyyy`
-            dt_temp = str(ws["B" + str(row)].value)
-            ws["B" + str(row)].value = dt_temp
-            ws["D" + str(row)].value = dt_temp
+    for row in range(2, ctr):
         ws["{}{}".format("J", row)].number_format = numbers.FORMAT_NUMBER
 
-    wb.save(output_dir)
+    wb.save(output_path)
     return True
