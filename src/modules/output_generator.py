@@ -9,10 +9,20 @@ from .sales_persons import sales_persons_dict
 import sys
 from datetime import datetime
 
-def generate_sales_import(data: pd.DataFrame, starting_num: int, output_dir  = "../../temp", version = "v1"):
-    # create instance of template file
-    wb = load_workbook("src/temp/TEMPLATE.xlsx")
+_DATE_FORMATS = ['%d-%m-%Y %H:%M', '%Y-%m-%d %H:%M']
 
+def _parse_date(value: str) -> str:
+    """Parse a date string using known formats and return mm/dd/yyyy."""
+    for fmt in _DATE_FORMATS:
+        try:
+            return datetime.strptime(value, fmt).strftime('%m/%d/%Y')
+        except ValueError:
+            continue
+    raise ValueError(f"Unrecognised date format: {value!r}")
+
+def generate_sales_import(data: pd.DataFrame, starting_num: int, output_dir  = "../../temp"):
+    # create new excel file
+    wb = Workbook()
     ws = wb.active
 
     previous_r = None
@@ -26,8 +36,9 @@ def generate_sales_import(data: pd.DataFrame, starting_num: int, output_dir  = "
             r[0] = generate_sales_order_str(current_si_no)
             current_si_no += 1
             previous_r = r
+            dt_temp = _parse_date(r[1])
 
-            dt_temp = datetime.strptime(r[1], '%d-%m-%Y %H:%M').strftime('%m/%d/%Y')
+            # dt_temp = datetime.strptime(r[1], '%d-%m-%Y %H:%M').strftime('%m/%d/%Y')
             ws.cell(row=ctr,column=2).value = dt_temp
             ws.cell(row=ctr,column=4).value = dt_temp
         elif r[9] != previous_r[9]:
@@ -35,7 +46,8 @@ def generate_sales_import(data: pd.DataFrame, starting_num: int, output_dir  = "
             current_si_no += 1
             previous_r = r
 
-            dt_temp = datetime.strptime(r[1], '%d-%m-%Y %H:%M').strftime('%m/%d/%Y')
+            # dt_temp = datetime.strptime(r[1], '%d-%m-%Y %H:%M').strftime('%m/%d/%Y')
+            dt_temp = _parse_date(r[1])
             ws.cell(row=ctr,column=2).value = dt_temp
             ws.cell(row=ctr,column=4).value = dt_temp
         else:
@@ -106,10 +118,23 @@ def generate_sales_import(data: pd.DataFrame, starting_num: int, output_dir  = "
         ws.cell(row=ctr,column=61).value = r[60]
         ws.cell(row=ctr,column=62).value = r[61]
 
-        # make sure fill is white
-        for col in ws['A':'BJ']:
-            col[0].fill = PatternFill(start_color='FFFFFF', fill_type="solid")
-        ctr += 1
+    grey_fill = PatternFill(start_color='808080', fill_type="solid")
+    for i in range(1, data.shape[0] + 7):
+        ws['AD' + str(i)].fill = grey_fill
+
+    blue_fill = PatternFill(start_color='00BFFF', fill_type="solid")
+    for col in ws['AE':'BJ']:
+        col[0].fill = blue_fill
+
+    ws['AD1'] = ""
+
+    for row in range(7, data.shape[1]+7):
+        if (ws["B" + str(row)].value != None and ws["B" + str(row)].value != ''):
+            # format date to `mm/dd/yyyy`
+            dt_temp = str(ws["B" + str(row)].value)
+            ws["B" + str(row)].value = dt_temp
+            ws["D" + str(row)].value = dt_temp
+        ws["{}{}".format("J", row)].number_format = numbers.FORMAT_NUMBER
 
     wb.save(output_dir)
     return True

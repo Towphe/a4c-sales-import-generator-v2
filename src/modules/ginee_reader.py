@@ -37,7 +37,6 @@ def treat_seller_info(seller_info: pd.DataFrame, version: str = "v1"):
     # output_pd = pd.DataFrame(columns=['Debtor', 'SalesPerson'])
     debtors = []
     sales_persons = []
-    
     if version == "v1":
         for r in dataframe_to_rows(seller_info, index=False, header=False):
             debtors.append(sales_persons_dict[r[0]][r[1]]["debtor"])

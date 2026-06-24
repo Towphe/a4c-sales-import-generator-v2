@@ -1,6 +1,6 @@
 from flask import request, redirect, url_for, render_template, send_from_directory, Blueprint, current_app, Response
 import os
-from ..modules import extract_from_ginee, generate_sales_import, sales_persons_dict
+from ..modules import extract_from_ginee, generate_sales_import, sales_persons_dict, extract_from_sitegiant
 from werkzeug.utils import secure_filename
 from dateutil import parser
 from datetime import datetime
@@ -36,11 +36,16 @@ def process_single_file():
         # then process file
         current_date = datetime.now()
 
+        store = request.form.get('store', 'ginee')
+        output = None
         df = pd.DataFrame()
 
         print(request.form.get("version"))
 
-        output = extract_from_ginee(file_path, request.form.get("version"))
+        if store == 'sitegiant':
+            output = extract_from_sitegiant(file_path)
+        else:
+            output = extract_from_ginee(file_path, request.form.get("version"))
 
         # validate output
         if output == None:
