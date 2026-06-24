@@ -1,6 +1,6 @@
 from flask import Flask, flash, request, redirect, url_for, render_template, send_from_directory
 import os
-from .modules import extract_from_ginee, generate_sales_import, sales_persons_dict
+from .modules import extract_from_ginee, extract_from_sitegiant, generate_sales_import, sales_persons_dict
 from werkzeug.utils import secure_filename
 from dateutil import parser
 from datetime import datetime
@@ -40,14 +40,18 @@ def processFile():
         # then process file
         current_date = datetime.now()
 
+        source = request.form.get('source', 'ginee')
         output = None
         df = pd.DataFrame()
+
         try:
-            #df = extract_from_ginee(file_path)
-            output = extract_from_ginee(file_path)
+            if source == 'sitegiant':
+                output = extract_from_sitegiant(file_path)
+            else:
+                output = extract_from_ginee(file_path)
             df = output['output']
         except Exception as e:
-            # print(e)
+            print(e)
             return redirect(url_for('index', s='file-error'))
         output_file_name = str(current_date.month) + "-" + str(current_date.day)+ "-" + str(current_date.year) + " " + output['filename'] +".xlsx"
         # os.remove(file_path)

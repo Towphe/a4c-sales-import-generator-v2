@@ -2,20 +2,25 @@ import numpy as np
 import pandas as pd
 from datetime import datetime, date
 from pandas.core.arrays import boolean
+from openpyxl.utils.dataframe import dataframe_to_rows
 from .sales_persons import sales_persons_dict
+from .sales_persons_v2 import sales_persons_dict_v2
+from datetime import datetime
+
+# dttm = datetime.strptime("", /"%m/%d/"%Y)
 
 # function that extracts data from ginee
-def extract_from_ginee(xl_dir: str) -> pd.DataFrame:
+def extract_from_ginee(xl_dir: str, version: str = "v1") -> pd.DataFrame:
     # read GINEE excel file
     ginee:pd.DataFrame = pd.read_excel(xl_dir).fillna(method='ffill')
 
     # validate GINEE excel file
-    if (ginee["Channel"].unique().__len__() != 1 or ginee["Store Name"].unique().__len__() != 1):
+    if (ginee["Channel"].unique().__len__() < 1 or ginee["Store Name"].unique().__len__() < 1):
         # invalid; document must only have one channel and/or store name
         return None
 
     # convert GINEE to output dataframme
-    output = convert_ginee_to_output(ginee)
+    output = convert_ginee_to_output(ginee, version)
 
     # check if output is valid
     if type(output) != pd.DataFrame:
@@ -24,21 +29,49 @@ def extract_from_ginee(xl_dir: str) -> pd.DataFrame:
     # return output and filename
     return {
         'output' : output,
-        'filename' : sales_persons_dict[ginee['Channel'][0]][ginee["Store Name"][0]]['filename']
     }
 
+
+def treat_seller_info(seller_info: pd.DataFrame, version: str = "v1"):
+    # instantiate data frame
+    # output_pd = pd.DataFrame(columns=['Debtor', 'SalesPerson'])
+    debtors = []
+    sales_persons = []
+
+    if version == "v1":
+        for r in dataframe_to_rows(seller_info, index=False, header=False):
+            debtors.append(sales_persons_dict[r[0]][r[1]]["debtor"])
+            sales_persons.append(sales_persons_dict[r[0]][r[1]]["name"])
+    elif version == "v2":
+        for r in dataframe_to_rows(seller_info, index=False, header=False):
+            debtors.append(sales_persons_dict_v2[r[0]][r[1]]["debtor"])
+            sales_persons.append(sales_persons_dict_v2[r[0]][r[1]]["name"])
+
+    output_pd = pd.DataFrame({
+        'Debtor': debtors,
+        'SalesPerson': sales_persons
+    })
+
+    return output_pd
+
 # convert GINEE excel file to output dataframe
-def convert_ginee_to_output(ginee_pd: pd.DataFrame) -> pd.DataFrame:
+def convert_ginee_to_output(ginee_pd: pd.DataFrame, version: str = "v1") -> pd.DataFrame:
     output_pd = pd.DataFrame()
+
+    # treat seller info
+    treated_seller_info = treat_seller_info(ginee_pd[["Channel","Store Name"]], version)
+
     try:
         output_pd["SalesOrderCode"] = ""
         output_pd["SalesOrderDate"] = ginee_pd["Create Time"]
         output_pd["IsApproved"] = True
         output_pd["TaxDate"] = ginee_pd["Create Time"]
-        output_pd["Debtor"] = sales_persons_dict[ginee_pd["Channel"].array[0]][ginee_pd["Store Name"].array[0]]["debtor"]
+        # output_pd["Debtor"] = sales_persons_dict[ginee_pd["Channel"].array[0]][ginee_pd["Store Name"].array[0]]["debtor"]
+        output_pd["Debtor"] = treated_seller_info["Debtor"]
         output_pd["CurrencyRate"] = 1   # appears as `N8` on the Excel file
         output_pd["ReverseRate"] = ""
-        output_pd["SalesPerson"] = sales_persons_dict[ginee_pd["Channel"].array[0]][ginee_pd["Store Name"].array[0]]["name"]
+        # output_pd["SalesPerson"] = sales_persons_dict[ginee_pd["Channel"].array[0]][ginee_pd["Store Name"].array[0]]["name"]
+        output_pd["SalesPerson"] = treated_seller_info["SalesPerson"]
         output_pd["Term"] = "C.O.D."
         output_pd["ReferenceNo"] = ginee_pd["Order ID"]
         output_pd["Ref1"] = ginee_pd["Recipient Name"]
@@ -84,7 +117,7 @@ def convert_ginee_to_output(ginee_pd: pd.DataFrame) -> pd.DataFrame:
         output_pd["Project_2"] = ""
         output_pd.rename(columns={"Project_2": "Project"}, inplace=True)
         output_pd["ReferenceNo_2"] = ""
-        output_pd.rename(columns={"ReferenceNo_2": "ReferenceNo"}, inplace=True)
+        # output_pd.rename(columns={"ReferenceNo_2": "ReferenceNo"}, inplace=True)
         output_pd["Ref"] = ""
         output_pd["Ref2_2"] = ""
         output_pd.rename(columns={"Ref2_2": "Ref2"}, inplace=True)
@@ -99,10 +132,17 @@ def convert_ginee_to_output(ginee_pd: pd.DataFrame) -> pd.DataFrame:
         output_pd["NumRef1"] = ""
         output_pd["NumRef2"] = ""
         output_pd["TaxCode"] = "SR-SP"
-        output_pd["TaxRate"] = "12.00%"
+        output_pd["TaxRate"] = 0.12
         output_pd["WTaxCode"] = 0.00
         output_pd["WTaxRate"] = 0.00
     except:
          return None
 
+    # sort values
+    output_pd = output_pd.sort_values(by=["Debtor", "ReferenceNo"], ascending=[True, False])
+
+    # rename column
+    output_pd.rename(columns={"ReferenceNo_2": "ReferenceNo"}, inplace=True)
+
+    # return output_pd.sort_values(by=['Debtor', "ReferenceNo"], ascending=True)
     return output_pd
