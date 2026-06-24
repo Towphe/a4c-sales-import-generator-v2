@@ -134,7 +134,7 @@ sitegiant_marketplace_dict = {
         "filename": "AFFORD",
         "debtor": "102-S004"
     },
-    "Lazada LG Monitors": {
+    "Lazada LG Monitor": {
         "name": "LAZADA LG",
         "filename": "LG PH",
         "debtor": "102-L001"
