@@ -7,6 +7,7 @@ from openpyxl.utils.dataframe import dataframe_to_rows
 from .sales_order_code_generator import generate_sales_order_str
 from .sales_persons import sales_persons_dict
 import sys
+import os
 from datetime import datetime
 
 _DATE_FORMATS = ['%d-%m-%Y %H:%M', '%Y-%m-%d %H:%M']
@@ -21,8 +22,9 @@ def _parse_date(value: str) -> str:
     raise ValueError(f"Unrecognised date format: {value!r}")
 
 def generate_sales_import(data: pd.DataFrame, starting_num: int, output_path  = "../../temp"):
-    # create new excel file
-    wb = Workbook()
+    # create new excel file from template
+    template_path = os.path.join(os.path.dirname(__file__), '..', 'temp', 'TEMPLATE.xlsx')
+    wb = load_workbook(template_path)
     ws = wb.active
 
     previous_r = None
