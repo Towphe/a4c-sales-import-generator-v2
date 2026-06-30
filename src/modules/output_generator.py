@@ -66,7 +66,6 @@ def generate_sales_import(data: pd.DataFrame, starting_num: int, output_path  = 
         ws.cell(row=ctr,column=9).value = r[8]
         ws.cell(row=ctr,column=10).value = str(r[9])
         ws.cell(row=ctr,column=10).number_format = '0'
-        print(ws.cell(row=ctr,column=10).value, flush=True)
         ws.cell(row=ctr,column=11).value = r[10]
         ws.cell(row=ctr,column=12).value = r[11]
         ws.cell(row=ctr,column=13).value = r[12]
