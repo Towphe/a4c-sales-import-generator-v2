@@ -64,8 +64,8 @@ def generate_sales_import(data: pd.DataFrame, starting_num: int, output_path  = 
         ws.cell(row=ctr,column=7).value = r[6]
         ws.cell(row=ctr,column=8).value = r[7]
         ws.cell(row=ctr,column=9).value = r[8]
-        ws.cell(row=ctr,column=10).value = str(r[9])
-        ws.cell(row=ctr,column=10).number_format = '0'
+        ws.cell(row=ctr,column=10).value = str(r[9].lstrip("'"))
+        ws.cell(row=ctr,column=10).number_format = '@'
         ws.cell(row=ctr,column=11).value = r[10]
         ws.cell(row=ctr,column=12).value = r[11]
         ws.cell(row=ctr,column=13).value = r[12]
@@ -131,8 +131,8 @@ def generate_sales_import(data: pd.DataFrame, starting_num: int, output_path  = 
 
     ws['AD1'] = ""
 
-    for row in range(2, ctr):
-        ws["{}{}".format("J", row)].number_format = numbers.FORMAT_NUMBER
+    # for row in range(2, ctr):
+    #     ws["{}{}".format("J", row)].number_format = numbers.
 
     wb.save(output_path)
     return True
