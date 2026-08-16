@@ -7,7 +7,7 @@ sales_persons_dict = {
         },
         # fix the following below
         "LG Monitors" : {
-            "name" : "LG-ONLINE SALES",
+            "name" : "LAZADA LG",
             "filename" : "LAZADA LG",
             "debtor" : "102-L001"
         },
@@ -26,18 +26,64 @@ sales_persons_dict = {
             "filename" : "POLY",
             "debtor" : "103-P00000006"
         },
-        "LAZADA-KONTROLFREEK" : { # this is right
+        "KontrolFreek Store" : { # this is right
             "name" : "KONTROLFREEK PH - ONLINE SALES",
             "filename" : "LAZADA KONTROLFREEK",
             "debtor" : "103-K00000011"
+        },
+        "Energea Philippines": {
+            "name": "LAZADA ENERGEA",
+            "filename": "LAZADA - Energea",
+            "debtor": "103-E00000019"
+        },
+        "JLab Audio": {
+            "name": "LAZADA-JLAB ONLINE",
+            "filename": "LAZADA - JLAB",
+            "debtor": "102-L010"
         }
     },
     "Shopee" : {
-        "Jabra" : {
-            "name" : "SHOPEE-JABRA ONLINE",
+        "Jabra Official Store" : {
+            "name" : "SHOPEE-JABRA",
             "debtor" : "102-S001"
+        },
+        "Afford4C": {
+            "name": "SHOPEE ONLINE",
+            "debtor": "103-S001"
+        },
+        "Poly Enterprise": {
+            "name":"SHOPEE POLYCOM",
+            "debtor":"103-S00000016"
+        },
+        "LG Monitors": {
+            "name": "SHOPEE-LG",
+            "debtor": "102-S019"
+        },
+        "ADDASOUND Audio": {
+            "name": "SHOPEE ONLINE-ADDA",
+            "debtor": "103-S00000026"
+        },
+        "Energea": {
+            "name": "SHOPEE ENERGEA",
+            "debtor": "103-S00000034"
+        },
+        "KontrolFreek Store": {
+            "name": "SHOPEE ONLINE-KONTRO",
+            "debtor": "103-S00000028"
+        },
+        "JLab Audio": {
+            "name": "SHOPEE-JLAB ONLINE",
+            "debtor": "102-S022"
+        }
+    },
+    "TikTok": {
+        "Jabra - Tiktok": {
+            "name": "TIKTOK JABRA",
+            "filename": "TIKTOK JABRA",
+            "debtor": "102-T005"
         }
     }
+
 }
 
 # Flat dict for SiteGiant exports.
@@ -88,7 +134,7 @@ sitegiant_marketplace_dict = {
         "filename": "AFFORD",
         "debtor": "102-S004"
     },
-    "Lazada LG Monitors": {
+    "Lazada LG Monitor": {
         "name": "LAZADA LG",
         "filename": "LG PH",
         "debtor": "102-L001"

@@ -77,7 +77,7 @@ def _convert_sitegiant_to_output(sg: pd.DataFrame) -> pd.DataFrame:
         lambda m: sitegiant_marketplace_dict[m]["name"]
     )
     out["Term"] = "C.O.D."
-    out["ReferenceNo"] = sg["order_id"]
+    out["ReferenceNo"] = sg["marketplace_order_id"]
     out["Ref1"] = (
         sg["shipping_firstname"].fillna("").str.strip()
         + " "
